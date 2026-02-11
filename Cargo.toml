@@ -1,5 +1,5 @@
 [package]
-name = "serveit"
+name = "lantrix"
 version = "0.1.0"
 edition = "2021"
 
@@ -17,3 +17,8 @@ rcgen = "0.13"
 
 # Select rustls CryptoProvider backend (ring)
 rustls = { version = "0.23", features = ["ring"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

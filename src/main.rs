@@ -19,7 +19,7 @@ use base64::engine::general_purpose::STANDARD as B64;
 use base64::Engine as _;
 
 #[derive(Parser, Debug)]
-#[command(name = "serveit", about = "Serve a directory over HTTP/HTTPS (with directory listings)")]
+#[command(name = "lantrix", about = "Serve a directory over HTTP/HTTPS (with directory listings)")]
 struct Args {
     /// Interface/IP to bind to (e.g. 127.0.0.1 or 0.0.0.0)
     #[arg(short = 'i', long = "interface", default_value = "127.0.0.1")]
@@ -117,8 +117,7 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
             rustls::crypto::ring::default_provider(),
         );
 
-        let (tls, cert_pem, key_pem) =
-            generate_self_signed_tls_with_pem(&args.interface).await?;
+        let (tls, cert_pem, key_pem) = generate_self_signed_tls_with_pem(&args.interface).await?;
 
         if args.print_cert {
             // Cert to stdout (safe-ish), key to stderr (keep out of logs if you redirect stdout)
@@ -127,7 +126,10 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         println!("Listening on: https://{addr}");
-        println!("Tip: open https://localhost:{} (or https://127.0.0.1:{})", args.port, args.port);
+        println!(
+            "Tip: open https://localhost:{} (or https://127.0.0.1:{})",
+            args.port, args.port
+        );
 
         axum_server::bind_rustls(addr, tls)
             .serve(app.into_make_service())
@@ -158,7 +160,7 @@ async fn generate_self_signed_tls_with_pem(
     let mut params = CertificateParams::new(vec!["localhost".to_string()])?;
 
     let mut dn = DistinguishedName::new();
-    dn.push(DnType::CommonName, "serveit");
+    dn.push(DnType::CommonName, "lantrix");
     params.distinguished_name = dn;
 
     // Allow https://127.0.0.1
@@ -181,7 +183,12 @@ async fn generate_self_signed_tls_with_pem(
     let cert_pem = cert.pem();
     let key_pem = key_pair.serialize_pem();
 
-    let tls = RustlsConfig::from_pem(cert_pem.clone().into_bytes(), key_pem.clone().into_bytes()).await?;
+    let tls = RustlsConfig::from_pem(
+        cert_pem.clone().into_bytes(),
+        key_pem.clone().into_bytes(),
+    )
+    .await?;
+
     Ok((tls, cert_pem, key_pem))
 }
 
@@ -259,7 +266,7 @@ fn is_authorized(headers: &HeaderMap, cfg: &AuthConfig) -> bool {
 fn unauthorized() -> Response {
     Response::builder()
         .status(StatusCode::UNAUTHORIZED)
-        .header(header::WWW_AUTHENTICATE, r#"Basic realm="serveit""#)
+        .header(header::WWW_AUTHENTICATE, r#"Basic realm="lantrix""#)
         .body(Body::from("Unauthorized"))
         .unwrap()
 }

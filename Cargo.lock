@@ -534,6 +534,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "lantrix"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "axum-server",
+ "base64",
+ "clap",
+ "mime_guess",
+ "rcgen",
+ "rustls",
+ "tokio",
+ "urlencoding",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.180"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -808,21 +823,6 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
-]
-
-[[package]]
-name = "serveit"
-version = "0.1.0"
-dependencies = [
- "axum",
- "axum-server",
- "base64",
- "clap",
- "mime_guess",
- "rcgen",
- "rustls",
- "tokio",
- "urlencoding",
 ]
 
 [[package]]
